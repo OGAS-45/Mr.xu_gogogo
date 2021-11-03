@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mzy.hdum.mapper.PrjMapper">
+    <resultMap id="result" type="com.mzy.hdum.model.Prj">
+        <result property="id" column="id" />
+        <result property="prjname" column="prjname" />
+        <result property="owner" column="owner" />
+		<result property="state" column="state" />
+		<result property="url" column="url" />
+		<result property="updatedate" column="updatedate" />
+		<result property="simage" column="simage" />
+		<result property="limage" column="limage" />
+		<result property="description" column="description" />
+		<result property="clicked" column="clicked" />
+		<result property="stared" column="stared" />
+		<result property="label" column="label" />
+    </resultMap>
+
+    <select id="ListPrj" resultMap="result">
+		SELECT * FROM prj
+	</select>
+
+    <select id="findPrjByName" resultMap="result" parameterType="String">
+		SELECT * FROM prj
+			where prjname like concat(concat('%',#{prjname}),'%')
+			order by id asc
+	</select>
+
+	<select id="findPrjById" resultMap="result" parameterType="Integer">
+		SELECT * FROM prj
+			where id like concat(concat('%',#{id}),'%')
+			order by id asc
+	</select>
+
+    <select id="queryPage" resultMap="result"  parameterType="Integer">
+		select * from prj
+			order by id asc
+			limit #{startRows},50
+	</select>
+
+    <select id="getRowCount" resultType="Integer">
+		select count(*) from prj
+	</select>
+
+    <insert id="insertPrj" parameterType="com.mzy.hdum.model.Prj">
+		INSERT INTO prj
+		(
+		prjname,owner,state,url,updatedate,simage,limage,description,clicked,stared,label
+		)
+		VALUES (
+		#{prjname, jdbcType=VARCHAR},
+		#{owner, jdbcType=VARCHAR},
+		#{state, jdbcType=VARCHAR}
+		#{url, jdbcType=VARCHAR},
+		#{updatedate, jdbcType=TIMESTAMP},
+		#{simage, jdbcType=VARCHAR},
+		#{limage, jdbcType=VARCHAR},
+		#{description, jdbcType=VARCHAR},
+		#{clicked, jdbcType=INTEGER},
+		#{stared, jdbcType=INTEGER},
+		#{label, jdbcType=VARCHAR}
+		)
+	</insert>
+
+    <delete id="delete" parameterType="int">
+		delete from prj where id=#{id}
+	</delete>
+
+    <update id="Update" parameterType="com.mzy.hdum.model.Prj">
+		update prj
+			set prj.prjname=#{prjname},prj.owner=#{owner},prj.state=#{state},prj.url=#{url},prj.updatedate=#{updatedate},prj.simage=#{simage},prj.limage=#{limage},prj.description=#{description},prj.clicked=#{clicked},prj.stared=#{stared},prj.label=#{label}
+			where prj.id=#{id}
+	</update>
+
+	<select id="findState" resultMap="result">
+		select distinct state from prj
+	</select>
+
+	<select id="findByState" resultMap="result" parameterType="String">
+		select * from prj where state = #{state} and prjname like concat(concat('%',#{prjname}),'%')
+	</select>
+
+	<update id="addStar" parameterType="int">
+		update prj set stared = stared + 1 where id = #{id}
+	</update>
+
+	<update id="addClick" parameterType="int">
+		update prj set clicked = clicked + 1 where id = #{id}
+	</update>
+</mapper>

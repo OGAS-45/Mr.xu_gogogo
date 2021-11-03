@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>prj</title>
+    <link rel="stylesheet" type="text/css" href="/css/prj.css" >
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="main">
+
+    <!-- 激活的菜单样式为  active 类 -->
+    <!-- 为了阻止链接在点击时跳转，我们使用了 "prevent" 修饰符 (preventDefault 的简称)。 -->
+
+    <nav v-bind:class="active" v-on:click.prevent>
+
+        <!-- 当菜单上的链接被点击时，我们调用了 makeActive 方法, 该方法在 Vue 实例中创建。 -->
+
+        <a href="#" class="home" v-on:click="makeActive('home')">Home</a>
+        <a href="#" class="projects" v-on:click="makeActive('projects')">Projects</a>
+        <a href="#" class="resources" v-on:click="makeActive('resources')">Resources</a>
+        <a href="#" class="teams" v-on:click="makeActive('teams')">Teams</a>
+    </nav>
+
+    <!-- 以下 "active" 变量会根据当前选中的值来自动变换 -->
+
+    <p>1您选择了 <b>{{active}} 菜单</b></p>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td>用户名</td>
+            <td>密码</td>
+            <td>操作</td>
+        </tr>
+        <tr v-for="user in users">
+            <td>{{user.id}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.password}}</td>
+            <td><a href="#">删除</a></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+    // 创建一个新的 Vue 实例
+    var demo = new Vue({
+        // DOM 元素，挂载视图模型
+        el: '#main',
+
+        // 定义d属性，并设置初始值
+        data: {
+            active: 'home',
+            users: [
+                {"id":1, "username":"tangzhe", "password":"123456"},
+                {"id":2, "username":"张三", "password":"666666"}
+            ]
+        },
+
+        // 点击菜单使用的函数
+        methods: {
+            loadData: function() {
+                var that = this;
+                axios.get('http://localhost:8888/user/list')
+                    .then(function (response) {
+                        var data = response.data;
+                        that.users = data;
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        mounted: function() {
+            // 页面加载执行方法
+            this.loadData();
+        }
+    });
+</script>
+</body>
+</html>

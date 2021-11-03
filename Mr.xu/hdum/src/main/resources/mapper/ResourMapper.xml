@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mzy.hdum.mapper.ResourMapper">
+    <resultMap id="result" type="com.mzy.hdum.model.Resour">
+        <result property="id" column="id" />
+        <result property="rname" column="rname" />
+        <result property="owner" column="owner" />
+		<result property="cls" column="cls" />
+		<result property="url" column="url" />
+		<result property="cdate" column="cdate" />
+		<result property="simage" column="simage" />
+		<result property="limage" column="limage" />
+		<result property="description" column="description" />
+		<result property="clicked" column="clicked" />
+		<result property="stared" column="stared" />
+		<result property="label" column="label" />
+    </resultMap>
+
+    <select id="ListResour" resultMap="result">
+		SELECT * FROM resour
+
+	</select>
+
+	<select id="ListResourByPrjwithLabel" resultMap="result" parameterType="String">
+       select * from resour
+            where label like concat(concat('%',#{label}),'%')
+			order by id asc
+	</select>
+
+    <select id="findResourByName" resultMap="result" parameterType="String">
+		SELECT * FROM resour
+			where rname like concat(concat('%',#{rname}),'%')
+			order by id asc
+	</select>
+
+	<select id="findResourById" resultMap="result" parameterType="Integer">
+		SELECT * FROM resour
+			where id like concat(concat('%',#{id}),'%')
+			order by id asc
+	</select>
+	<select id="findCls" resultMap="result" parameterType="String">
+	SELECT distinct cls FROM resour
+   </select>
+
+	<select id="findResourByCls" resultMap="result" parameterType="String">
+		SELECT * FROM resour
+			where cls like concat(concat('%',#{cls}),'%')
+			order by id asc
+	</select>
+
+    <select id="queryPage" resultMap="result"  parameterType="Integer">
+		select * from resour
+			order by id asc
+			limit #{startRows},50
+	</select>
+
+    <select id="getRowCount" resultType="Integer">
+		select count(*) from resour
+	</select>
+
+    <insert id="insertResour" parameterType="com.mzy.hdum.model.Resour">
+		INSERT INTO resour
+		(
+		rname,owner,cls,url,cdate,simage,limage,description,clicked,stared,label
+		)
+		VALUES (
+		#{rname, jdbcType=VARCHAR},
+		#{owner, jdbcType=VARCHAR},
+		#{cls, jdbcType=VARCHAR},
+		#{url, jdbcType=VARCHAR},
+		#{cdate, jdbcType=TIMESTAMP},
+		#{simage, jdbcType=VARCHAR},
+		#{limage, jdbcType=VARCHAR},
+		#{description, jdbcType=VARCHAR},
+		#{clicked, jdbcType=INTEGER},
+		#{stared, jdbcType=INTEGER},
+		#{label, jdbcType=VARCHAR}
+		)
+	</insert>
+
+    <delete id="delete" parameterType="int">
+		delete from resour where id=#{id}
+	</delete>
+
+    <update id="Update" parameterType="com.mzy.hdum.model.Resour">
+		update resour
+			set resour.rname=#{rname},resour.owner=#{owner},resour.cls=#{cls},resour.url=#{url},resour.cdate=#{cdate},resour.simage=#{simage},resour.limage=#{limage},resour.description=#{description},resour.clicked=#{clicked},resour.stared=#{stared},resour.label=#{label}
+			where Resour.id=#{id}
+	</update>
+
+	<update id="addStar" parameterType="int">
+		update resour set stared = stared + 1 where id = #{id}
+	</update>
+
+	<update id="addClick" parameterType="int">
+		update resour set clicked = clicked + 1 where id = #{id}
+	</update>
+</mapper>
